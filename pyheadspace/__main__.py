@@ -241,7 +241,7 @@ def get_pack_attributes(
         if item["type"] == "orderedActivities":
             if not no_meditation:
                 id = item["relationships"]["activity"]["data"]["id"]
-                download_pack_session(id, duration, _pack_name, out=out)
+                download_pack_session(id, duration, _pack_name, attributes["description"], out=out)
         elif item["type"] == "orderedTechniques":
             if not no_techniques:
                 id = item["relationships"]["technique"]["data"]["id"]
@@ -299,6 +299,7 @@ def download_pack_session(
     id: Union[int, str],
     duration: List[int],
     pack_name: Optional[str],
+    pack_description: Optional[str],
     out: str,
     filename_suffix=None,
 ):
@@ -312,7 +313,7 @@ def download_pack_session(
             name += filename_suffix
         filePath=download(direct_url, name, filename=name, pack_name=pack_name, out=out)
         if(filePath):
-            addTags(filePath,name,pack_name,id)
+            addTags(filePath,name,pack_name,pack_description,id)
 
 
 
@@ -427,7 +428,7 @@ def download(
     else:
         return filepath
 
-def addTags(filepath: str,title:str,album:str,track_number:int=0,total_tracks:int=0):
+def addTags(filepath: str,title:str,album:str,description:str="",track_number:int=0,total_tracks:int=0):
     """
     Adds tags to an audio file specified by `filepath`. The tags added include 
     `title`, `album`, `artist`, and `track_num` (if `total_tracks` and 
@@ -437,6 +438,7 @@ def addTags(filepath: str,title:str,album:str,track_number:int=0,total_tracks:in
         filepath (str): The path to the audio file.
         title (str): The title of the audio file.
         album (str): The name of the album the audio file belongs to.
+        description (str, optional): The album description
         track_number (int, optional): The track number of the audio file. 
             Defaults to 0.
         total_tracks (int, optional): The total number of tracks in the album. 
@@ -451,6 +453,8 @@ def addTags(filepath: str,title:str,album:str,track_number:int=0,total_tracks:in
     audiofile.tag.title = title
     audiofile.tag.album = album
     audiofile.tag.artist = "headspace"
+    audiofile.tag.genre = description
+    audiofile.tag.recording_date = datetime.now().year
     if(total_tracks!=0 and track_number!=0):
         audiofile.tag.track_num = (track_number, total_tracks)
     elif(total_tracks==0 and track_number!=0):
