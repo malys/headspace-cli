@@ -269,11 +269,11 @@ def get_signed_url(response: dict, duration: List[int]) -> dict:
 
         sign_id = item["id"]
         # Getting signed URL
-        response = request_url(SIGN_URL, id=sign_id)
-        if (not response) :
+        direct_response = request_url(SIGN_URL, id=sign_id)
+        if (not direct_response) :
             return
         
-        direct_url = response["url"]
+        direct_url = direct_response["url"]
         if len(duration) > 1:
             name += f"({duration_in_min} minutes)"
 
