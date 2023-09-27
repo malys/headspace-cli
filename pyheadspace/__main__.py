@@ -146,7 +146,13 @@ def request_url(
     if not mute:
         logger.info("Sending GET request to {}".format(url))
 
-    response = session.get(url, params=params)
+    while True:
+        response = session.get(url, params=params)
+        if response.status_code != 503:
+            break
+        console.print(f"status code {response.status_code}: currently unavailable, waiting...")
+        time.sleep(10)
+    
     response_js: dict = {}
     try:
         response_js = response.json()
@@ -754,5 +760,6 @@ def login(_email: str, _password: str):
     console.print("[green]:heavy_check_mark:[/green] Logged in successfully!")
 
 # For launch program directly, useful for debugging
-cli()
+#cli()
+
 session.close()
