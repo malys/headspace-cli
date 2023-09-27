@@ -454,7 +454,7 @@ def addTags(filepath: str,title:str,album:str,description:str="",track_number:in
     audiofile.tag.album = album
     audiofile.tag.artist = "headspace"
     audiofile.tag.genre = description
-    audiofile.tag.recording_date = datetime.now().year
+    audiofile.tag.recording_date = str(datetime.now().year)
     if(total_tracks!=0 and track_number!=0):
         audiofile.tag.track_num = (track_number, total_tracks)
     elif(total_tracks==0 and track_number!=0):
